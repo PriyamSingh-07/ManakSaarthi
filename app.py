@@ -86,11 +86,24 @@ button[data-baseweb="tab"][aria-selected="true"]{color:var(--navy)}
 .result-head{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start}
 .search-box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:1rem 1.1rem;margin-bottom:1rem}
 .login-wrap{
-  max-width:470px;margin:5vh auto 0;background:#fff;border:1px solid var(--line);
-  border-radius:20px;padding:2.2rem;box-shadow:0 15px 40px rgba(16,42,67,.08)
+  max-width:1060px;margin:5vh auto 0;background:#fff;border:1px solid var(--line);
+  border-radius:22px;overflow:hidden;box-shadow:0 20px 55px rgba(16,42,67,.11)
 }
-.login-logo{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--navy)}
+.login-brand-panel{
+  min-height:510px;padding:3.2rem 2.7rem;color:#fff;
+  background:radial-gradient(circle at 90% 10%,rgba(233,138,25,.32),transparent 30%),
+    linear-gradient(145deg,#09263D 0%,#104262 60%,#1C5975 100%);
+}
+.login-brand-panel .eyebrow{color:#F7B45F}
+.login-brand-panel h1{color:#fff !important;font-size:2.35rem !important;line-height:1.12;margin:3.5rem 0 1rem !important}
+.login-brand-panel p{color:#D8E6EF;line-height:1.65}
+.login-logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:#fff}
+.login-form-panel{padding:3.2rem 3rem}
+.login-form-panel h2{margin:.3rem 0 .35rem}
+.login-form-panel [data-testid="stForm"]{border:0;padding:0}
+.login-tag{display:inline-block;padding:.35rem .65rem;border-radius:999px;background:rgba(255,255,255,.1);color:#E8F1F6;font-size:.78rem}
 .small-note{font-size:.78rem;color:var(--muted)}
+@media(max-width:760px){.login-brand-panel{min-height:0;padding:2rem}.login-brand-panel h1{margin:2rem 0 .7rem !important}.login-form-panel{padding:2rem}}
 </style>
 """,
     unsafe_allow_html=True,
@@ -165,29 +178,31 @@ def go(page):
 
 
 if not st.session_state.signed_in:
-    st.markdown(
-        """
-        <div class="login-wrap">
-          <div class="eyebrow">AI-powered procurement intelligence</div>
-          <div class="login-logo">मानकसारथी</div>
-          <div style="font-size:.95rem;color:#647A91;margin-bottom:1.4rem">
-            ManakSaarthi · Indian Standards Recommendation & Procurement Assistant
-          </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    st.markdown("### Find the right Indian Standards")
-    st.caption("Turn product descriptions and tender requirements into structured standards recommendations.")
-    with st.form("login"):
-        st.text_input("Official email", placeholder="officer@department.gov.in")
-        st.text_input("Password", type="password")
-        if st.form_submit_button("Sign in", type="primary", use_container_width=True):
-            st.session_state.signed_in = True
-            st.rerun()
-    st.markdown(
-        '<div class="small-note">Prototype access · enter any email and password to continue.</div></div>',
-        unsafe_allow_html=True,
-    )
+    brand_col, form_col = st.columns([1.05, 1], gap="small")
+    with brand_col:
+        st.markdown(
+            """
+            <div class="login-wrap login-brand-panel">
+              <div class="login-logo">मानकसारथी</div>
+              <div class="eyebrow" style="margin-top:1.4rem">Procurement intelligence</div>
+              <h1>Make every specification count.</h1>
+              <p>Find relevant Indian Standards and prepare clearer, more confident procurement requirements.</p>
+              <span class="login-tag">Indian Standards · Procurement workspace</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with form_col:
+        with st.container(border=True):
+            st.markdown('<div class="eyebrow">Welcome back</div><h2>Sign in to ManakSaarthi</h2>', unsafe_allow_html=True)
+            st.caption("Use your department account to continue to your workspace.")
+            with st.form("login"):
+                st.text_input("Official email", placeholder="name@department.gov.in")
+                st.text_input("Password", type="password", placeholder="Enter your password")
+                if st.form_submit_button("Sign in", type="primary", use_container_width=True):
+                    st.session_state.signed_in = True
+                    st.rerun()
+            st.markdown('<div class="small-note">Prototype access · any email and password will continue.</div>', unsafe_allow_html=True)
     st.stop()
 
 
